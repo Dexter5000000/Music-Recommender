@@ -16,40 +16,47 @@ An AI-powered music recommendation platform that analyzes your Spotify listening
 - 🔐 **Secure Backend** - Express.js API with Appwrite Cloud database integration
 - 📱 **Mobile Ready** - Fully responsive design works on all devices
 - 🚀 **Real-time API Integration** - Live ReccoBeats API for actual song recommendations
+- 🔗 **Spotify Integration** - Parse real Spotify playlists with SpotAPI to extract track data and artist information
 
 ---
 
 ## 🎯 How It Works
 
 ### 1. **User Submission**
-- User uploads Spotify screenshot or shares playlist link
+- User uploads Spotify screenshot or shares playlist/track link
 - Frontend validates and sends to backend
 
-### 2. **Genre & Mood Detection**
-- Backend analyzes submission content
+### 2. **Spotify Link Parsing (SpotAPI)**
+- If user provided a Spotify link, backend extracts real track data
+- Parses playlist URLs to get track titles, artists, and metadata
+- Falls back to text description if parsing fails
+
+### 3. **Genre & Mood Detection**
+- Backend analyzes submission content (from text or extracted tracks)
 - Detects music preferences (Christian pop, hip-hop, indie, etc.)
 - Identifies mood (uplifting, worshipful, reflective, energetic)
+- Extracts artist information for better seed track selection
 
-### 3. **Audio Feature Targeting**
+### 4. **Audio Feature Targeting**
 - System calculates target audio features:
   - **Valence**: 0.75 (uplifting, positive mood)
   - **Energy**: 0.65 (moderate-high engagement)
   - **Danceability**: 0.6 (rhythm quality)
 
-### 4. **ReccoBeats API Call**
+### 5. **ReccoBeats API Call**
 - Selects seed tracks matching detected genre
 - Calls: `GET /v1/track/recommendation?seeds=...&size=10&valence=0.75&energy=0.65`
 - Receives 10 real song recommendations
 
-### 5. **Playlist Creation**
+### 6. **Playlist Creation**
 - Formats API response into two curated playlists:
   - **Main Playlist**: Top 5 recommendations
   - **Deep Dive**: Discover more tracks
 - Each song includes title, artist, genre, recommendation reason
 
-### 6. **Data Persistence**
+### 7. **Data Persistence**
 - Stores results in Appwrite Cloud database
-- User can view submission history
+- Includes metadata about Spotify tracks if parsed
 
 ---
 
@@ -146,6 +153,8 @@ spotify-recommender/
 │   │   │   └── statsRoutes.ts           # Stats handling
 │   │   ├── services/
 │   │   │   ├── reccoBeatsService.ts     # Music recommendations (ReccoBeats API)
+│   │   │   ├── spotifyDataService.ts    # Spotify data extraction (SpotAPI wrapper)
+│   │   │   ├── spotifyLinkParser.py     # SpotAPI integration (Python)
 │   │   │   └── recommendationService.ts # Legacy recommendations
 │   │   ├── controllers/
 │   │   │   └── statsController.ts
@@ -229,6 +238,11 @@ Content-Type: application/json
   "genres": ["christian-pop"],
   "moods": ["uplifting"],
   "reasoning": "Curated christian-pop recommendations with uplifting characteristics",
+  "spotifyData": {
+    "artists": ["Hillsong United", "Newsboys"],
+    "genres": ["christian-pop"],
+    "avgPopularity": 72
+  },
   "generatedAt": "2025-11-24T03:52:00.000Z"
 }
 ```
@@ -248,6 +262,7 @@ Content-Type: application/json
 | **Backend Language** | TypeScript |
 | **Database** | Appwrite Cloud |
 | **Recommendations API** | ReccoBeats |
+| **Spotify Integration** | SpotAPI |
 | **Icons** | Lucide React |
 | **HTTP Client** | Axios |
 
@@ -289,6 +304,9 @@ The application includes a professional landing page with:
 
 4. **Check backend logs**
    ```
+   [SPOTAPI] Successfully parsed Spotify link: playlist with 50 tracks
+   [API] Extracted genres: christian-pop, pop
+   [API] Top artists: Hillsong United, Newsboys
    [RECCOBEATS] Detected genres: christian-pop
    [RECCOBEATS] Detected moods: uplifting
    [RECCOBEATS] Got 9 recommendations from API
@@ -299,6 +317,43 @@ The application includes a professional landing page with:
 
 - Playlist: `https://open.spotify.com/playlist/37i9dQZF1FoyQGyinuuvRu`
 - Track: `https://open.spotify.com/track/7uax1a1G4cg1GgokfakTnN`
+- Direct link with tracks: `https://open.spotify.com/playlist/YOUR_PLAYLIST_ID`
+
+---
+
+## 🔗 SpotAPI Integration
+
+The platform now includes **SpotAPI** for seamless Spotify integration:
+
+### What SpotAPI Does
+- **Extracts real track data** from Spotify playlists without requiring authentication
+- **Parses playlist URLs** to get artist names, track titles, and metadata
+- **Searches Spotify tracks** to find similar music
+- **No API keys required** - Works with free Spotify access
+
+### How It Works
+1. User submits a Spotify link (playlist, track, or album)
+2. SpotAPI parses the URL and extracts track information
+3. System analyzes genres and artists from extracted data
+4. ReccoBeats API generates recommendations using extracted seeds
+5. Results are personalized based on actual user's Spotify library
+
+### Setup SpotAPI
+SpotAPI is already installed during `npm install`. No additional configuration needed!
+
+**Example: Parse a Spotify Playlist**
+```typescript
+import { SpotifyDataService } from './services/spotifyDataService';
+
+const tracks = await SpotifyDataService.parseSpotifyLink(
+  'https://open.spotify.com/playlist/37i9dQZF1FoyQGyinuuvRu'
+);
+
+// Returns: [
+//   { id: '...', title: 'Track Name', artist: 'Artist Name', ... },
+//   { id: '...', title: 'Another Track', artist: 'Another Artist', ... },
+// ]
+```
 
 ---
 
