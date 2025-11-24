@@ -1,0 +1,8 @@
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import './index.css';
+import AppwriteHealthCheck from './components/AppwriteHealthCheck';
+function App() {
+    return (_jsx(Router, { children: _jsxs("div", { className: "min-h-screen bg-gradient-to-br from-green-900 to-black", children: [_jsx("nav", { className: "bg-black bg-opacity-80 backdrop-blur sticky top-0 z-50", children: _jsxs("div", { className: "container mx-auto px-4 py-4", children: [_jsxs("div", { className: "flex items-center justify-between mb-2", children: [_jsxs("div", { className: "flex items-center gap-2", children: [_jsx("span", { className: "text-2xl", children: "\uD83C\uDFB5" }), _jsx("h1", { className: "text-xl font-bold text-white", children: "Spotify Stats Recommender" })] }), _jsx("div", { className: "text-sm text-gray-400", children: "Discover music based on your listening stats" })] }), _jsxs("div", { className: "flex items-center gap-2", children: [_jsx("span", { className: "text-xs text-gray-500", children: "Status:" }), _jsx(AppwriteHealthCheck, {})] })] }) }), _jsx("main", { className: "container mx-auto px-4 py-8", children: _jsx(Routes, { children: _jsx(Route, { path: "/", element: _jsxs("div", { className: "text-center py-20", children: [_jsx("h2", { className: "text-4xl font-bold mb-4", children: "\uD83C\uDFB5 Welcome!" }), _jsx("p", { className: "text-xl text-gray-300 mb-8", children: "Get personalized music recommendations based on your Spotify listening stats" }), _jsx("p", { className: "text-gray-400", children: "Routes and pages coming soon..." })] }) }) }) })] }) }));
+}
+export default App;

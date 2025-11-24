@@ -1,0 +1,25 @@
+{
+  "name": "spotify-listening-stats-recommender",
+  "version": "1.0.0",
+  "description": "AI-powered music recommendation website based on Spotify listening stats",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend",
+    "shared"
+  ],
+  "scripts": {
+    "dev": "concurrently \"cd starter-appwrite && npm run dev\" \"npm run dev -w backend\"",
+    "dev:react": "concurrently \"npm run dev -w frontend\" \"npm run dev -w backend\"",
+    "build": "npm run build -w shared && npm run build -w frontend && npm run build -w backend",
+    "start": "npm run start -w backend",
+    "lint": "npm run lint -w frontend && npm run lint -w backend",
+    "test": "npm run test -w frontend && npm run test -w backend"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "node-fetch": "^2.7.0"
+  }
+}
