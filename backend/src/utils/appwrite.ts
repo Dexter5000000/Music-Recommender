@@ -4,13 +4,17 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 console.log('Initializing Appwrite client...');
-console.log('Endpoint:', process.env.APPWRITE_ENDPOINT);
-console.log('Project ID:', process.env.APPWRITE_PROJECT_ID);
+const endpoint = process.env.VITE_APPWRITE_ENDPOINT || process.env.APPWRITE_ENDPOINT || 'https://cloud.appwrite.io/v1';
+const projectId = process.env.VITE_APPWRITE_PROJECT_ID || process.env.APPWRITE_PROJECT_ID || '';
+const apiKey = process.env.APPWRITE_API_KEY || '';
+
+console.log('Endpoint:', endpoint);
+console.log('Project ID:', projectId);
 
 const client = new Client()
-  .setEndpoint(process.env.APPWRITE_ENDPOINT || 'https://cloud.appwrite.io/v1')
-  .setProject(process.env.APPWRITE_PROJECT_ID || '')
-  .setKey(process.env.APPWRITE_API_KEY || '');
+  .setEndpoint(endpoint)
+  .setProject(projectId)
+  .setKey(apiKey);
 
 console.log('✓ Appwrite client initialized');
 
@@ -27,7 +31,7 @@ export const COLLECTIONS = {
 };
 
 // Database ID
-export const DATABASE_ID = 'spotify-db';
+export const DATABASE_ID = process.env.VITE_APPWRITE_DATABASE_ID || 'spotify-db';
 
 export { databases, storage, ID };
 export default client;

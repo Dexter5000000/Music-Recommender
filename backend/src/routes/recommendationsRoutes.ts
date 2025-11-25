@@ -7,8 +7,9 @@ const router = express.Router();
 
 // Initialize Appwrite client
 const client = new Client()
-  .setEndpoint(process.env.VITE_APPWRITE_ENDPOINT || 'https://cloud.appwrite.io/v1')
-  .setProject(process.env.VITE_APPWRITE_PROJECT_ID || '');
+  .setEndpoint(process.env.VITE_APPWRITE_ENDPOINT || 'https://us-east-1.cloud.appwrite.io/v1')
+  .setProject(process.env.VITE_APPWRITE_PROJECT_ID || '')
+  .setKey(process.env.APPWRITE_API_KEY || '');
 
 const databases = new Databases(client);
 

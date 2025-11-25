@@ -24,32 +24,82 @@ interface RecommendationResult {
   generatedAt: string;
 }
 
-// Christian music seed tracks for recommendations
-// Using popular Spotify IDs that are guaranteed to exist in ReccoBeats
-const CHRISTIAN_SEED_TRACKS = {
-  'christian-hiphop': [
-    '11dFghVu5yppv5zH0NK0O8', // Kanye West - Jesus Walks (similar energy to Christian hip hop)
-    '0diylW9XH59g4izYmUQP6N', // Jay-Z - Izzo/H.O.V.A. (high energy similar to Christian hip hop)
-    '3qm84nBvXcG82nrF3K9DZx', // Tupac - California Love (energetic hip hop)
+// Universal music seed tracks for recommendations
+// Using widely recognized Spotify IDs that ReccoBeats accepts
+const UNIVERSAL_SEED_TRACKS = {
+  'hiphop': [
+    '4uLU6hMCjMI75M1A2tKUQC', // Rick Astley - Never Gonna Give You Up (widely indexed)
+    '6ZFbXIJkuI1dVNWvzJzown', // Drake - God's Plan
+    '11dFghVu5yppv5zH0NK0O8', // Kanye West - Jesus Walks
   ],
-  'christian-pop': [
-    '0VjIjW4GlUZAMYd2vXMwbG', // Blinding Lights - The Weeknd (popular uplifting pop)
-    '11dFghVu5yppv5zH0NK0O8', // Jesus Walks - Kanye West (spiritual themes)
-    '7qiZfU4dY1lsylvNFoYL2E', // Shape of You - Ed Sheeran (pop baseline for melody)
+  'pop': [
+    '4uLU6hMCjMI75M1A2tKUQC', // Rick Astley - Never Gonna Give You Up
+    '6ZFbXIJkuI1dVNWvzJzown', // Drake - God's Plan
+    '7qiZfU4dY1lsylvNFoYL2E', // Ed Sheeran - Shape of You
   ],
-  'christian-indie': [
-    '3n3Ppam7vgaVa1iaRUc9Lp', // Arctic Monkeys - Do I Wanna Know? (indie vibe)
-    '7xXXneU3XVc8sJj0Ent0Zm', // The Strokes - Last Nite (indie classic)
+  'indie': [
+    '4uLU6hMCjMI75M1A2tKUQC', // Rick Astley
+    '6ZFbXIJkuI1dVNWvzJzown', // Drake
+    '7qiZfU4dY1lsylvNFoYL2E', // Ed Sheeran
   ],
   'electronic': [
-    '2takcwgfAJjIX0IBnVrCu7', // Daft Punk - Get Lucky (electronic with energy)
-    '0VjIjW4GlUZAMYd2vXMwbG', // Calvin Harris - How Deep Is Your Love (uplifting electronic)
+    '4uLU6hMCjMI75M1A2tKUQC', // Rick Astley
+    '6ZFbXIJkuI1dVNWvzJzown', // Drake
+    '7qiZfU4dY1lsylvNFoYL2E', // Ed Sheeran
+  ],
+  'rock': [
+    '4uLU6hMCjMI75M1A2tKUQC', // Rick Astley
+    '6ZFbXIJkuI1dVNWvzJzown', // Drake
+    '7qiZfU4dY1lsylvNFoYL2E', // Ed Sheeran
+  ],
+  'rnb': [
+    '4uLU6hMCjMI75M1A2tKUQC', // Rick Astley
+    '6ZFbXIJkuI1dVNWvzJzown', // Drake
+    '7qiZfU4dY1lsylvNFoYL2E', // Ed Sheeran
+  ],
+  'jazz': [
+    '4uLU6hMCjMI75M1A2tKUQC', // Rick Astley
+    '6ZFbXIJkuI1dVNWvzJzown', // Drake
+    '7qiZfU4dY1lsylvNFoYL2E', // Ed Sheeran
+  ],
+  'country': [
+    '4uLU6hMCjMI75M1A2tKUQC', // Rick Astley
+    '6ZFbXIJkuI1dVNWvzJzown', // Drake
+    '7qiZfU4dY1lsylvNFoYL2E', // Ed Sheeran
+  ],
+  'latin': [
+    '4uLU6hMCjMI75M1A2tKUQC', // Rick Astley
+    '6ZFbXIJkuI1dVNWvzJzown', // Drake
+    '7qiZfU4dY1lsylvNFoYL2E', // Ed Sheeran
+  ],
+};
+
+// Christian music seed tracks as secondary option
+const CHRISTIAN_SEED_TRACKS = {
+  'hiphop': [
+    '11dFghVu5yppv5zH0NK0O8', // Kanye West - Jesus Walks
+    '0diylW9XH59g4izYmUQP6N', // Jay-Z - Izzo/H.O.V.A.
+    '3qm84nBvXcG82nrF3K9DZx', // Tupac - California Love
+  ],
+  'pop': [
+    '0VjIjW4GlUZAMYd2vXMwbG', // Blinding Lights - The Weeknd
+    '11dFghVu5yppv5zH0NK0O8', // Jesus Walks - Kanye West
+    '7qiZfU4dY1lsylvNFoYL2E', // Shape of You - Ed Sheeran
+  ],
+  'indie': [
+    '3n3Ppam7vgaVa1iaRUc9Lp', // Arctic Monkeys - Do I Wanna Know?
+    '7xXXneU3XVc8sJj0Ent0Zm', // The Strokes - Last Nite
+  ],
+  'electronic': [
+    '2takcwgfAJjIX0IBnVrCu7', // Daft Punk - Get Lucky
+    '0VjIjW4GlUZAMYd2vXMwbG', // Calvin Harris - How Deep Is Your Love
   ]
 };
 
 export class ReccoBeatsService {
   private apiUrl = 'https://api.reccobeats.com/v1';
-  private seedTracks = CHRISTIAN_SEED_TRACKS;
+  private seedTracks = UNIVERSAL_SEED_TRACKS;
+  private christianFallback = CHRISTIAN_SEED_TRACKS;
 
   /**
    * Extract Spotify IDs from playlist URL
@@ -171,13 +221,17 @@ export class ReccoBeatsService {
       };
 
       // Adjust based on detected mood
-      if (moods.includes('worshipful') || moods.includes('reflective')) {
-        audioFeatureTargets.valence = 0.7;  // Slightly lower for contemplative
+      if (moods.includes('melancholic') || moods.includes('reflective')) {
+        audioFeatureTargets.valence = 0.4;  // Lower for sad/melancholic
         audioFeatureTargets.energy = 0.5;   // Lower energy for reflection
       }
-      if (moods.includes('energetic')) {
+      if (moods.includes('energetic') || moods.includes('intense')) {
         audioFeatureTargets.energy = 0.75;  // Higher energy
         audioFeatureTargets.danceability = 0.7;
+      }
+      if (moods.includes('romantic')) {
+        audioFeatureTargets.valence = 0.6;  // Moderate for romantic
+        audioFeatureTargets.energy = 0.4;   // Lower energy
       }
 
       // Get recommendations with audio feature targeting
@@ -210,45 +264,56 @@ export class ReccoBeatsService {
   }
 
   /**
-   * Detect Christian genres from content
+   * Detect genres from content (universal genre detection)
    */
   private detectGenres(content: string): string[] {
     const lowerContent = content.toLowerCase();
     const genres: string[] = [];
 
-    // Check for specific Christian genre mentions or Christian music indicator
-    if (lowerContent.includes('hiphop') || lowerContent.includes('hip-hop') || lowerContent.includes('rap')) {
-      genres.push('christian-hiphop');
-    }
-    if (lowerContent.includes('pop')) {
-      genres.push('christian-pop');
-    }
-    if (lowerContent.includes('indie') || lowerContent.includes('alternative')) {
-      genres.push('christian-indie');
-    }
-    if (lowerContent.includes('electronic') || lowerContent.includes('edm') || lowerContent.includes('synth')) {
-      genres.push('electronic');
+    // Genre detection keywords
+    const genrePatterns: { [key: string]: string[] } = {
+      'hiphop': ['hiphop', 'hip-hop', 'rap', 'trap'],
+      'pop': ['pop', 'mainstream', 'radio'],
+      'rock': ['rock', 'alternative', 'indie-rock', 'punk'],
+      'indie': ['indie', 'alternative', 'underground'],
+      'electronic': ['electronic', 'edm', 'synth', 'house', 'techno', 'dnb'],
+      'rnb': ['rnb', 'r&b', 'soul', 'rhythm'],
+      'jazz': ['jazz', 'improvisation'],
+      'country': ['country', 'americana', 'folk'],
+      'latin': ['latin', 'reggaeton', 'cumbia', 'salsa'],
+      'metal': ['metal', 'heavy'],
+      'reggae': ['reggae', 'dancehall'],
+      'afrobeat': ['afrobeat', 'afrobeats', 'african'],
+    };
+
+    // Check for genre mentions
+    for (const [genre, keywords] of Object.entries(genrePatterns)) {
+      if (keywords.some((kw) => lowerContent.includes(kw))) {
+        genres.push(genre);
+      }
     }
 
-    // Default to Christian Pop if no genres detected
+    // Default to pop if no genres detected
     if (genres.length === 0) {
-      genres.push('christian-pop');
+      genres.push('pop');
     }
 
     return [...new Set(genres)];
   }
 
   /**
-   * Detect moods from content
+   * Detect moods from content (universal mood detection)
    */
   private detectMoods(content: string): string[] {
     const lowerContent = content.toLowerCase();
     const moodKeywords: { [key: string]: string[] } = {
-      energetic: ['workout', 'energetic', 'upbeat', 'party', 'hiphop', 'rap', 'gym'],
-      chill: ['chill', 'relax', 'lofi', 'ambient', 'peaceful', 'indie', 'cool'],
-      worshipful: ['worship', 'prayer', 'spiritual', 'devotion', 'praise'],
-      reflective: ['think', 'study', 'focus', 'reflect', 'meditate'],
-      uplifting: ['uplifting', 'joy', 'happy', 'positive', 'gospel', 'blessed', 'good'],
+      energetic: ['workout', 'energetic', 'upbeat', 'party', 'hiphop', 'rap', 'gym', 'dance', 'club'],
+      chill: ['chill', 'relax', 'lofi', 'ambient', 'peaceful', 'indie', 'cool', 'zen', 'mellow'],
+      reflective: ['think', 'study', 'focus', 'reflect', 'meditate', 'introspect', 'contemplative'],
+      uplifting: ['uplifting', 'joy', 'happy', 'positive', 'good', 'feel-good', 'motivational'],
+      melancholic: ['sad', 'melancholic', 'emotional', 'depressing', 'moody', 'dark', 'introspective'],
+      romantic: ['romantic', 'love', 'date', 'intimate', 'slow'],
+      intense: ['intense', 'aggressive', 'hard', 'heavy', 'powerful', 'metal'],
     };
 
     const moods: string[] = [];
@@ -279,9 +344,9 @@ export class ReccoBeatsService {
       }
     }
 
-    // Ensure we have seeds, default to Christian Pop
+    // Ensure we have seeds, default to pop
     if (seeds.length === 0) {
-      seeds.push(...this.seedTracks['christian-pop']);
+      seeds.push(...(this.seedTracks as any)['pop']);
     }
 
     return seeds.slice(0, 5); // Max 5 seeds for API
@@ -323,7 +388,7 @@ export class ReccoBeatsService {
 
     const playlist1: PlaylistRecommendation = {
       name: `${genres[0]?.replace('-', ' ').toUpperCase()} Mix`,
-      description: 'Your personalized Christian music picks',
+      description: 'Your personalized music picks',
       songs: songs.slice(0, 5),
       mood: moods[0] || 'uplifting',
       confidence: 0.95,
@@ -331,7 +396,7 @@ export class ReccoBeatsService {
 
     const playlist2: PlaylistRecommendation = {
       name: `Deep Dive Selection`,
-      description: 'Discover more Christian tracks',
+      description: 'Discover more tracks',
       songs: songs.slice(5, 10),
       mood: moods[1] || moods[0] || 'reflective',
       confidence: 0.90,
@@ -345,27 +410,27 @@ export class ReccoBeatsService {
    */
   private generateFallbackRecommendations(submissionId: string): RecommendationResult {
     const fallbackSongs = [
-      { title: 'All Me', artist: 'Lecrae', genre: 'Christian Hip Hop', reason: 'Inspiring Christian hip hop' },
-      { title: 'Look Up Child', artist: 'Lauren Daigle', genre: 'Christian Pop', reason: 'Uplifting Christian pop' },
-      { title: 'Rise Up', artist: 'Hillsong Young & Free', genre: 'Worship', reason: 'Modern worship anthem' },
-      { title: 'Awake and Alive', artist: 'Skillet', genre: 'Christian Rock', reason: 'High-energy Christian rock' },
-      { title: 'Kiss Me', artist: 'Sixpence None The Richer', genre: 'Christian Indie', reason: 'Classic Christian indie' },
-      { title: 'Living Hope', artist: 'Kristian Stanfill', genre: 'Worship', reason: 'Meaningful worship song' },
-      { title: 'Monster', artist: 'Skillet', genre: 'Electronic', reason: 'Intense Christian electronic' },
-      { title: 'Good Good Father', artist: 'Chris Tomlin', genre: 'Christian Pop', reason: 'Modern Christian classic' },
+      { title: 'Blinding Lights', artist: 'The Weeknd', genre: 'Synthwave Pop', reason: 'Popular modern hit' },
+      { title: 'Shape of You', artist: 'Ed Sheeran', genre: 'Pop', reason: 'Catchy pop track' },
+      { title: 'Do I Wanna Know?', artist: 'Arctic Monkeys', genre: 'Indie Rock', reason: 'Indie anthem' },
+      { title: 'Get Lucky', artist: 'Daft Punk', genre: 'Electronic', reason: 'Electronic classic' },
+      { title: 'Good as Hell', artist: 'Lizzo', genre: 'Pop', reason: 'Uplifting feel-good track' },
+      { title: 'Levitating', artist: 'Dua Lipa', genre: 'Disco Pop', reason: 'Energetic disco-pop' },
+      { title: 'Last Nite', artist: 'The Strokes', genre: 'Indie Rock', reason: 'Classic indie rock' },
+      { title: 'Midnight City', artist: 'M83', genre: 'Electronic', reason: 'Synth-pop masterpiece' },
     ];
 
     const playlist1: PlaylistRecommendation = {
-      name: 'Christian Hits Mix',
-      description: 'Handpicked Christian music favorites',
+      name: 'Music Mix',
+      description: 'Handpicked music favorites',
       songs: fallbackSongs.slice(0, 4),
       mood: 'uplifting',
       confidence: 0.85,
     };
 
     const playlist2: PlaylistRecommendation = {
-      name: 'Deep Christian Picks',
-      description: 'More Christian music recommendations',
+      name: 'Deep Music Picks',
+      description: 'More music recommendations',
       songs: fallbackSongs.slice(4, 8),
       mood: 'reflective',
       confidence: 0.80,
@@ -374,9 +439,9 @@ export class ReccoBeatsService {
     return {
       submissionId,
       recommendations: [playlist1, playlist2],
-      genres: ['christian-pop', 'christian-hiphop'],
+      genres: ['pop', 'indie'],
       topMoods: ['uplifting'],
-      reasoning: 'Curated Christian music based on your taste',
+      reasoning: 'Curated music based on your taste',
       generatedAt: new Date().toISOString(),
     };
   }
