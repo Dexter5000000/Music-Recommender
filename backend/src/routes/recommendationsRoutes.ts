@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import ReccoBeatsService from '../services/reccoBeatsService';
 import { SpotifyDataService } from '../services/spotifyDataService';
+import ChristianMusicArchiveService from '../services/christianMusicArchiveService';
 import { Client, Databases } from 'node-appwrite';
 
 const router = express.Router();
@@ -73,6 +74,19 @@ router.post('/:submissionId', async (req: Request, res: Response) => {
 
     console.log(`[API] Recommendations generated successfully`);
 
+    // Get Christian artist suggestions if user opts in
+    let christianArtists: string[] = [];
+    try {
+      const detectedGenre = recommendations.genres[0] || 'alternative';
+      christianArtists = await ChristianMusicArchiveService.getChristianRecommendations(
+        detectedGenre
+      );
+      console.log(`[API] Found ${christianArtists.length} Christian artist recommendations`);
+    } catch (cmaError: any) {
+      console.log(`[API] Could not fetch Christian artists:`, cmaError.message);
+      // Continue without Christian artists - not critical
+    }
+
     // Optional: Store recommendations in Appwrite
     try {
       const databaseId = process.env.VITE_APPWRITE_DATABASE_ID || '';
@@ -108,6 +122,10 @@ router.post('/:submissionId', async (req: Request, res: Response) => {
       moods: recommendations.topMoods,
       reasoning: recommendations.reasoning,
       generatedAt: recommendations.generatedAt,
+      christianArtists: christianArtists.length > 0 ? {
+        artists: christianArtists,
+        message: 'Here are some Christian artists with similar styles',
+      } : null,
       spotifyData: spotifyData ? { // Include Spotify data if available
         artists: spotifyData.artists,
         genres: spotifyData.genres,

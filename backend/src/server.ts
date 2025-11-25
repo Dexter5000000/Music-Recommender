@@ -71,6 +71,18 @@ try {
   console.error('[ERROR] Stack trace:', err.stack);
 }
 
+// Import and register Christian artists routes
+try {
+  console.log('[SERVER] Importing Christian artists routes...');
+  const christianArtistsRoutes = require('./routes/christianArtistsRoutes').default;
+  console.log('[SERVER] Christian artists routes imported successfully');
+  app.use('/api/christian-artists', christianArtistsRoutes);
+  console.log('[SERVER] Christian artists routes registered');
+} catch (err: any) {
+  console.error('[ERROR] Failed to import Christian artists routes:', err.message);
+  console.error('[ERROR] Stack trace:', err.stack);
+}
+
 // Error handling middleware
 app.use(
   (
